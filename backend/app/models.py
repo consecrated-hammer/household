@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, Date, DateTime, Enum, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import Boolean, Column, Date, DateTime, Enum, ForeignKey, Integer, JSON, Numeric, String, Text
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -88,3 +88,59 @@ class ScenarioAdjustment(Base):
     CreatedAt = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
 
     Scenario = relationship("Scenario", back_populates="Adjustments")
+
+
+class Expense(Base):
+    __tablename__ = "expenses"
+
+    Id = Column(Integer, primary_key=True, index=True)
+    HouseholdId = Column(Integer, ForeignKey("households.Id"), nullable=False)
+    OwnerUserId = Column(Integer, ForeignKey("users.Id"), nullable=False)
+    Label = Column(String(200), nullable=False)
+    Amount = Column(Numeric(12, 2), nullable=False)
+    Frequency = Column(String(50), nullable=False)
+    Account = Column(String(200))
+    Type = Column(String(200))
+    NextDueDate = Column(Date)
+    Cadence = Column(String(50))
+    Interval = Column(Integer)
+    Month = Column(Integer)
+    DayOfMonth = Column(Integer)
+    Enabled = Column(Boolean, nullable=False, default=True)
+    Notes = Column(Text)
+    DisplayOrder = Column(Integer, nullable=False, default=0, index=True)
+    CreatedAt = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+
+
+class ExpenseAccount(Base):
+    __tablename__ = "expense_accounts"
+
+    Id = Column(Integer, primary_key=True, index=True)
+    HouseholdId = Column(Integer, ForeignKey("households.Id"), nullable=False)
+    OwnerUserId = Column(Integer, ForeignKey("users.Id"), nullable=False)
+    Name = Column(String(200), nullable=False)
+    Enabled = Column(Boolean, nullable=False, default=True)
+    CreatedAt = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+
+
+class ExpenseType(Base):
+    __tablename__ = "expense_types"
+
+    Id = Column(Integer, primary_key=True, index=True)
+    HouseholdId = Column(Integer, ForeignKey("households.Id"), nullable=False)
+    OwnerUserId = Column(Integer, ForeignKey("users.Id"), nullable=False)
+    Name = Column(String(200), nullable=False)
+    Enabled = Column(Boolean, nullable=False, default=True)
+    CreatedAt = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+
+
+class TablePreference(Base):
+    __tablename__ = "table_preferences"
+
+    Id = Column(Integer, primary_key=True, index=True)
+    HouseholdId = Column(Integer, ForeignKey("households.Id"), nullable=False)
+    UserId = Column(Integer, ForeignKey("users.Id"), nullable=False)
+    TableKey = Column(String(200), nullable=False)
+    State = Column(JSON, nullable=False)
+    CreatedAt = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+    UpdatedAt = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)

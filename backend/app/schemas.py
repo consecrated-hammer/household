@@ -160,3 +160,112 @@ class TaxCalculatorResponse(BaseModel):
     Medicare: TaxPeriodAmounts
     Mls: TaxPeriodAmounts
     Super: TaxPeriodAmounts
+
+
+class ExpenseBase(BaseModel):
+    Label: str = Field(min_length=1, max_length=200)
+    Amount: Decimal
+    Frequency: str
+    Account: str | None = None
+    Type: str | None = None
+    NextDueDate: date | None = None
+    Cadence: str | None = None
+    Interval: int | None = None
+    Month: int | None = None
+    DayOfMonth: int | None = None
+    Enabled: bool = True
+    Notes: str | None = None
+
+
+class ExpenseCreate(ExpenseBase):
+    pass
+
+
+class ExpenseUpdate(ExpenseBase):
+    pass
+
+
+class ExpenseOut(ExpenseBase):
+    Id: int
+    HouseholdId: int
+    OwnerUserId: int
+    CreatedAt: datetime
+    DisplayOrder: int
+    PerDay: Decimal
+    PerWeek: Decimal
+    PerFortnight: Decimal
+    PerMonth: Decimal
+    PerYear: Decimal
+
+    class Config:
+        from_attributes = True
+
+
+class ExpenseAccountBase(BaseModel):
+    Name: str = Field(min_length=1, max_length=200)
+    Enabled: bool = True
+
+
+class ExpenseAccountCreate(ExpenseAccountBase):
+    pass
+
+
+class ExpenseAccountUpdate(ExpenseAccountBase):
+    pass
+
+
+class ExpenseAccountOut(ExpenseAccountBase):
+    Id: int
+    HouseholdId: int
+    OwnerUserId: int
+    CreatedAt: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class ExpenseTypeBase(BaseModel):
+    Name: str = Field(min_length=1, max_length=200)
+    Enabled: bool = True
+
+
+class ExpenseTypeCreate(ExpenseTypeBase):
+    pass
+
+
+class ExpenseTypeUpdate(ExpenseTypeBase):
+    pass
+
+
+class ExpenseTypeOut(ExpenseTypeBase):
+    Id: int
+    HouseholdId: int
+    OwnerUserId: int
+    CreatedAt: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class TablePreferenceBase(BaseModel):
+    TableKey: str = Field(min_length=1, max_length=200)
+    State: dict
+
+
+class TablePreferenceUpdate(TablePreferenceBase):
+    pass
+
+
+class TablePreferenceOut(TablePreferenceBase):
+    Id: int
+    HouseholdId: int
+    UserId: int
+    CreatedAt: datetime
+    UpdatedAt: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class ExpenseOrderUpdate(BaseModel):
+    OrderedIds: list[int] = Field(min_length=1)

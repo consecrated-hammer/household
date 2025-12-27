@@ -12,6 +12,10 @@ from app.routes.auth import router as auth_router
 from app.routes.income_streams import router as income_router
 from app.routes.scenarios import router as scenario_router
 from app.routes.tax_calculator import router as tax_calculator_router
+from app.routes.expenses import router as expense_router
+from app.routes.expense_accounts import router as expense_account_router
+from app.routes.expense_types import router as expense_type_router
+from app.routes.table_preferences import router as table_preferences_router
 
 
 def CreateApp() -> FastAPI:
@@ -58,6 +62,10 @@ def CreateApp() -> FastAPI:
     app.include_router(income_router)
     app.include_router(scenario_router)
     app.include_router(tax_calculator_router)
+    app.include_router(expense_router)
+    app.include_router(expense_account_router)
+    app.include_router(expense_type_router)
+    app.include_router(table_preferences_router)
     return app
 
 

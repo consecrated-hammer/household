@@ -82,7 +82,7 @@ def EstimateTax(payload: TaxCalculatorRequest) -> TaxCalculatorResponse:
     income_tax = _CalculateIncomeTax(taxable_income, tax_year)
     medicare = taxable_income * tax_year.MedicareLevyRate
     mls = Decimal("0") if payload.PrivateHealth else taxable_income * tax_year.MlsRate
-    net_annual = taxable_base - income_tax - medicare - mls
+    net_annual = taxable_base - novated_annual - income_tax - medicare - mls
 
     return TaxCalculatorResponse(
         TaxYear=tax_year.Label,
