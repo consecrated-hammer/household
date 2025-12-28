@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import logging
 from urllib.parse import urlparse
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import HTMLResponse
@@ -77,21 +78,31 @@ def Refresh(payload: RefreshRequest, db: Session = Depends(GetDb)) -> TokenPair:
 
 @router.get("/authelia", response_model=TokenPair)
 def AutheliaLogin(request: Request, db: Session = Depends(GetDb)) -> TokenPair:
+    logger = logging.getLogger("auth.authelia")
     if not settings.AutheliaEnabled:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Authelia login disabled"
         )
 
     email = request.headers.get(settings.AutheliaHeaderEmail)
+    candidate_user = request.headers.get(settings.AutheliaHeaderUser)
+    return_to = request.query_params.get("returnTo")
+    logger.info(
+        "Authelia login request email=%s user=%s host=%s returnTo=%s",
+        email or "",
+        candidate_user or "",
+        request.headers.get("host", ""),
+        return_to or "",
+    )
     if not email:
-        candidate = request.headers.get(settings.AutheliaHeaderUser)
-        if candidate:
-            if "@" in candidate:
-                email = candidate
+        if candidate_user:
+            if "@" in candidate_user:
+                email = candidate_user
             elif settings.AutheliaFallbackDomain:
-                email = f"{candidate}@{settings.AutheliaFallbackDomain}"
+                email = f"{candidate_user}@{settings.AutheliaFallbackDomain}"
 
     if not email:
+        logger.warning("Authelia headers missing, rejecting login.")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authelia identity headers not found",
@@ -119,7 +130,6 @@ def AutheliaLogin(request: Request, db: Session = Depends(GetDb)) -> TokenPair:
 
     tokens = IssueTokenPair(user, db)
     token_payload = {"AccessToken": tokens.AccessToken, "RefreshToken": tokens.RefreshToken}
-    return_to = request.query_params.get("returnTo")
     if return_to:
         safe_target = "/income"
         if return_to.startswith("/"):

@@ -67,9 +67,8 @@ export function LoginPage() {
     setLoading(true);
     setStatus({ type: "idle", message: "" });
     try {
-      const returnTo = `${window.location.origin}/income`;
       window.location.href = `${GetApiUrl()}/auth/authelia?returnTo=${encodeURIComponent(
-        returnTo
+        "/income"
       )}`;
     } catch (error) {
       setStatus({ type: "error", message: error.message });
