@@ -213,3 +213,10 @@ A task is “done” when:
   - Allocation remainder distribution and >100% validation
   - RBAC policy checks (allow/deny)
 - A simple API smoke test script or minimal e2e happy path is acceptable as FeatureChecks.
+
+## Modularity and Routing
+- App.jsx must stay thin (providers + routing only). No feature state/effects in App.jsx.
+- Each route has its own page component under /src/pages/<PageName>/.
+- Feature logic lives in hooks under /src/hooks (fetching, mutations, table prefs, calculations).
+- Shared UI goes in /src/components; shared utilities/constants in /src/lib.
+- Routing is required for top-level areas (e.g. /income, /expenses, /allocations, /settings).
