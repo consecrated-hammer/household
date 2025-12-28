@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { Login, Register, Refresh } from "../lib/api.js";
+import { AutheliaLogin, Login, Register, Refresh } from "../lib/api.js";
 
 const AuthContext = createContext(null);
 
@@ -58,6 +58,12 @@ export function AuthProvider({ children }) {
     return result;
   };
 
+  const loginWithAuthelia = async () => {
+    const result = await AutheliaLogin();
+    setTokens(result);
+    return result;
+  };
+
   const register = async (payload) => {
     return Register(payload);
   };
@@ -74,6 +80,7 @@ export function AuthProvider({ children }) {
         tokens,
         setTokens,
         login,
+        loginWithAuthelia,
         register,
         logout,
         ExecuteWithRefresh,

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import { GetApiUrl } from "../../lib/api.js";
 
 const InitialAuthForm = {
   Email: "",
@@ -9,7 +10,7 @@ const InitialAuthForm = {
 };
 
 export function LoginPage() {
-  const { login, register } = useAuth();
+  const { login, loginWithAuthelia, register, tokens } = useAuth();
   const navigate = useNavigate();
   const [authMode, setAuthMode] = useState("login");
   const [authForm, setAuthForm] = useState(InitialAuthForm);
@@ -29,6 +30,47 @@ export function LoginPage() {
         await login({ Email: authForm.Email, Password: authForm.Password });
         navigate("/income", { replace: true });
       }
+    } catch (error) {
+      setStatus({ type: "error", message: error.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let active = true;
+    if (tokens?.AccessToken) {
+      navigate("/income", { replace: true });
+      return;
+    }
+    loginWithAuthelia()
+      .then(() => {
+        if (active) {
+          navigate("/income", { replace: true });
+        }
+      })
+      .catch((error) => {
+        if (!active) {
+          return;
+        }
+        if (error.status === 401 || error.status === 404) {
+          return;
+        }
+        setStatus({ type: "error", message: error.message });
+      });
+    return () => {
+      active = false;
+    };
+  }, [loginWithAuthelia, navigate, tokens]);
+
+  const handleAutheliaLogin = async () => {
+    setLoading(true);
+    setStatus({ type: "idle", message: "" });
+    try {
+      const returnTo = `${window.location.origin}/income`;
+      window.location.href = `${GetApiUrl()}/auth/authelia?returnTo=${encodeURIComponent(
+        returnTo
+      )}`;
     } catch (error) {
       setStatus({ type: "error", message: error.message });
     } finally {
@@ -56,7 +98,23 @@ export function LoginPage() {
             </div>
           </div>
 
-          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          <div className="mt-6 space-y-4">
+            <button
+              type="button"
+              className="w-full rounded-xl border border-ink/20 px-4 py-3 text-sm font-semibold"
+              onClick={handleAutheliaLogin}
+              disabled={loading}
+            >
+              Continue with Authelia
+            </button>
+            <div className="flex items-center gap-3 text-xs text-ink/50">
+              <span className="h-px flex-1 bg-ink/10" />
+              Or use email and password
+              <span className="h-px flex-1 bg-ink/10" />
+            </div>
+          </div>
+
+          <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
             <div className="flex gap-2">
               <button
                 type="button"

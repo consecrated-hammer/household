@@ -1,0 +1,58 @@
+services:
+  budget-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
+    container_name: budget-dev
+    restart: unless-stopped
+    env_file: .env.dev
+    user: "${PUID:-1000}:${PGID:-1000}"
+    environment:
+      DatabaseUrl: ${DatabaseUrl}
+      JwtSecretKey: ${JWT_SECRET_KEY}
+      LogLevel: ${LogLevel}
+      AllowedOrigins: ${AllowedOrigins}
+      LogFilePath: /app/backend/logs/app.log
+      LogMaxBytes: 5000000
+      LogBackupCount: 5
+      LogJsonEnabled: "false"
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_ALLOWED_HOSTS: ${VITE_ALLOWED_HOSTS}
+    volumes:
+      - ./:/app
+      - ${BUDGET_DB_DIR}:/data
+      - ./backend/logs:/app/backend/logs
+      - ./frontend/node_modules:/app/frontend/node_modules
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_proxy"
+      - "traefik.http.routers.budget-dev.rule=Host(`budget-dev.${DOMAIN_PRIMARY}`) || Host(`www.budget-dev.${DOMAIN_PRIMARY}`)"
+      - "traefik.http.routers.budget-dev.entrypoints=websecure"
+      - "traefik.http.routers.budget-dev.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.budget-dev.service=budget-dev-ui"
+      - "traefik.http.services.budget-dev-ui.loadbalancer.server.port=5173"
+      - "traefik.http.middlewares.budget-dev-sec.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
+      - "traefik.http.middlewares.budget-dev-sec.headers.customResponseHeaders.X-Frame-Options=SAMEORIGIN"
+      - "traefik.http.routers.budget-dev.middlewares=budget-dev-sec,authelia@docker"
+      - "traefik.http.routers.budget-dev-api.rule=Host(`budget-dev.${DOMAIN_PRIMARY}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.budget-dev-api.entrypoints=websecure"
+      - "traefik.http.routers.budget-dev-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.budget-dev-api.service=budget-dev-api"
+      - "traefik.http.services.budget-dev-api.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.budget-dev-api-strip.stripprefix.prefixes=/api"
+      - "traefik.http.routers.budget-dev-api.middlewares=budget-dev-api-strip,authelia@docker"
+      - "homepage.enable=true"
+      - "homepage.name=Household Budget Dev"
+      - "homepage.href=https://budget-dev.${DOMAIN_PRIMARY}"
+      - "homepage.icon=https://budget-dev.${DOMAIN_PRIMARY}/favicon.svg"
+      - "homepage.group=Projects"
+
+networks:
+  traefik_proxy:
+    external: true
+    name: traefik_proxy

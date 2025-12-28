@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     LogMaxBytes: int = 5_000_000
     LogBackupCount: int = 5
     LogJsonEnabled: bool = False
+    AutheliaEnabled: bool = True
+    AutheliaHeaderEmail: str = "Remote-Email"
+    AutheliaHeaderUser: str = "Remote-User"
+    AutheliaFallbackDomain: str = ""
 
     class Config:
         env_file = ".env"
