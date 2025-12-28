@@ -45,7 +45,7 @@ services:
       - "traefik.http.routers.budget-dev-api.service=budget-dev-api"
       - "traefik.http.services.budget-dev-api.loadbalancer.server.port=8000"
       - "traefik.http.middlewares.budget-dev-api-strip.stripprefix.prefixes=/api"
-      - "traefik.http.routers.budget-dev-api.middlewares=budget-dev-api-strip,authelia@docker"
+      - "traefik.http.routers.budget-dev-api.middlewares=authelia@docker,budget-dev-api-strip"
       - "homepage.enable=true"
       - "homepage.name=Household Budget Dev"
       - "homepage.href=https://budget-dev.${DOMAIN_PRIMARY}"
