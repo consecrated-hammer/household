@@ -1,9 +1,9 @@
-# Budget App
+# Household App
 
 ## Local dev (Docker)
 
 ```bash
-docker compose up --build -d budget-dev
+docker compose up --build -d household-dev
 ```
 
 Frontend: http://localhost:5173
@@ -24,10 +24,11 @@ curl http://localhost:8000/health
 Uses `.env.dev` + `docker-compose.traefik.dev.yml` with SQLite.
 Ensure `PUID`/`PGID` are set in `.env.dev` to avoid permission issues on bind mounts.
 Create `frontend/node_modules` and `backend/logs` on the host once so permissions are correct.
-Make sure `BUDGET_DB_DIR` exists and is writable by `PUID`/`PGID` for the SQLite file.
+Make sure `HOUSEHOLD_DB_DIR` exists and is writable by `PUID`/`PGID` for the SQLite file.
+If you previously created a DB under a non-writable path, delete it or move it to the new `HOUSEHOLD_DB_DIR`.
 
-Frontend: https://budget-dev.${DOMAIN_PRIMARY}/
-Backend: https://budget-dev.${DOMAIN_PRIMARY}/api
+Frontend: https://household-dev.${DOMAIN_PRIMARY}/
+Backend: https://household-dev.${DOMAIN_PRIMARY}/api
 
 ## Authelia SSO (optional)
 

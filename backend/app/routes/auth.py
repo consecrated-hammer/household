@@ -131,7 +131,7 @@ def AutheliaLogin(request: Request, db: Session = Depends(GetDb)) -> TokenPair:
     tokens = IssueTokenPair(user, db)
     token_payload = {"AccessToken": tokens.AccessToken, "RefreshToken": tokens.RefreshToken}
     if return_to:
-        safe_target = "/income"
+        safe_target = "/"
         if return_to.startswith("/"):
             safe_target = return_to
         else:
@@ -151,7 +151,7 @@ def AutheliaLogin(request: Request, db: Session = Depends(GetDb)) -> TokenPair:
   <body>
     <script>
       const tokenData = {payload};
-      localStorage.setItem('budgetTokens', JSON.stringify(tokenData));
+      localStorage.setItem('householdTokens', JSON.stringify(tokenData));
       window.location.replace({json.dumps(safe_target)});
     </script>
   </body>

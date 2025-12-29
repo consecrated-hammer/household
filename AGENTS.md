@@ -124,7 +124,7 @@ A task is “done” when:
 - Deferred items are captured as TODOs with clear next steps
 
 
-# Budget App Addendum (Project-Specific)
+# Household App Addendum (Project-Specific)
 
 ## Core Principles
 - Multi-user from day one. Every record is owned by a user.
@@ -199,6 +199,7 @@ A task is “done” when:
 
 ## Adhoc Scripts and Documentation
 - Place one-off validation scripts in `./_temp/` (create the folder if missing).
+- Place dev scripts (e.g. to run realtime frontend or backend processes) in `./_scripts/` (create the folder if missing).
 - Keep `./docs/` sparse. Only add docs when explicitly requested.
 - When integrating any external API (including AI APIs), first create an adhoc script in `./_temp/` to validate:
   - request shape, auth, parameters
