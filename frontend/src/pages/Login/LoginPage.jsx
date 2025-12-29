@@ -28,7 +28,7 @@ export function LoginPage() {
         setStatus({ type: "success", message: "Account created. Sign in next." });
       } else {
         await login({ Email: authForm.Email, Password: authForm.Password });
-        navigate("/income", { replace: true });
+        navigate("/", { replace: true });
       }
     } catch (error) {
       setStatus({ type: "error", message: error.message });
@@ -40,13 +40,13 @@ export function LoginPage() {
   useEffect(() => {
     let active = true;
     if (tokens?.AccessToken) {
-      navigate("/income", { replace: true });
+      navigate("/", { replace: true });
       return;
     }
     loginWithAuthelia()
       .then(() => {
         if (active) {
-          navigate("/income", { replace: true });
+          navigate("/", { replace: true });
         }
       })
       .catch((error) => {
@@ -68,7 +68,7 @@ export function LoginPage() {
     setStatus({ type: "idle", message: "" });
     try {
       window.location.href = `${GetApiUrl()}/auth/authelia?returnTo=${encodeURIComponent(
-        "/income"
+        "/"
       )}`;
     } catch (error) {
       setStatus({ type: "error", message: error.message });
@@ -81,7 +81,7 @@ export function LoginPage() {
     <div className="min-h-screen bg-sand px-6 py-10 text-ink">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-ink/50">Household budget</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-ink/50">Household</p>
           <h1 className="mt-3 font-display text-4xl">
             Map every income stream and keep the household aligned.
           </h1>

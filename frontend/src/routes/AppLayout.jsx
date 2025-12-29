@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 import { useSettings } from "../contexts/SettingsContext.jsx";
 
 const navItems = [
+  { label: "Home", icon: "dashboard", path: "/", end: true },
   { label: "Income", icon: "income", path: "/income" },
   { label: "Expenses", icon: "expenses", path: "/expenses" },
   { label: "Allocations", icon: "allocations", path: "/allocations" },
@@ -42,6 +43,9 @@ export function AppLayout() {
   const isCompact = layoutMode === "auto" ? isCompactAuto : layoutMode === "compact";
 
   const pageTitle = useMemo(() => {
+    if (location.pathname === "/") {
+      return "Household";
+    }
     if (location.pathname.startsWith("/expenses")) {
       return "Expenses";
     }
@@ -81,6 +85,7 @@ export function AppLayout() {
                   <div key={item.label} className="relative">
                     <NavLink
                       to={item.path}
+                      end={item.end}
                       className={({ isActive }) =>
                         `w-full rounded-2xl px-4 py-3 text-left text-sm flex items-center justify-between gap-3 ${
                           isActive
@@ -223,6 +228,7 @@ export function AppLayout() {
                 <NavLink
                   key={item.label}
                   to={item.path}
+                  end={item.end}
                   className={({ isActive }) =>
                     `w-full rounded-2xl px-4 py-3 text-left text-sm flex items-center justify-between gap-3 ${
                       isActive

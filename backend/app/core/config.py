@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    DatabaseUrl: str = "postgresql+psycopg2://budget:budget@db:5432/budget"
+    DatabaseUrl: str = "sqlite:////data/household.db"
     JwtSecretKey: str = "change-me"
     JwtAlgorithm: str = "HS256"
     AccessTokenTtlMinutes: int = 15

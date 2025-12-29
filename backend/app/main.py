@@ -20,7 +20,7 @@ from app.routes.table_preferences import router as table_preferences_router
 
 def CreateApp() -> FastAPI:
     configure_logging()
-    app = FastAPI(title="Budget API")
+    app = FastAPI(title="Household API")
 
     allowed_origins = [origin.strip() for origin in settings.AllowedOrigins.split(",") if origin.strip()]
     app.add_middleware(

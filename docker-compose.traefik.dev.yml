@@ -1,12 +1,12 @@
 services:
-  budget-dev:
+  household-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
       args:
         PUID: ${PUID:-1000}
         PGID: ${PGID:-1000}
-    container_name: budget-dev
+    container_name: household-dev
     restart: unless-stopped
     env_file: .env.dev
     user: "${PUID:-1000}:${PGID:-1000}"
@@ -23,7 +23,7 @@ services:
       VITE_ALLOWED_HOSTS: ${VITE_ALLOWED_HOSTS}
     volumes:
       - ./:/app
-      - ${BUDGET_DB_DIR}:/data
+      - ${HOUSEHOLD_DB_DIR}:/data
       - ./backend/logs:/app/backend/logs
       - ./frontend/node_modules:/app/frontend/node_modules
     networks:
@@ -31,25 +31,27 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_proxy"
-      - "traefik.http.routers.budget-dev.rule=Host(`budget-dev.${DOMAIN_PRIMARY}`) || Host(`www.budget-dev.${DOMAIN_PRIMARY}`)"
-      - "traefik.http.routers.budget-dev.entrypoints=websecure"
-      - "traefik.http.routers.budget-dev.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.budget-dev.service=budget-dev-ui"
-      - "traefik.http.services.budget-dev-ui.loadbalancer.server.port=5173"
-      - "traefik.http.middlewares.budget-dev-sec.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
-      - "traefik.http.middlewares.budget-dev-sec.headers.customResponseHeaders.X-Frame-Options=SAMEORIGIN"
-      - "traefik.http.routers.budget-dev.middlewares=budget-dev-sec,authelia@docker"
-      - "traefik.http.routers.budget-dev-api.rule=Host(`budget-dev.${DOMAIN_PRIMARY}`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.budget-dev-api.entrypoints=websecure"
-      - "traefik.http.routers.budget-dev-api.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.budget-dev-api.service=budget-dev-api"
-      - "traefik.http.services.budget-dev-api.loadbalancer.server.port=8000"
-      - "traefik.http.middlewares.budget-dev-api-strip.stripprefix.prefixes=/api"
-      - "traefik.http.routers.budget-dev-api.middlewares=authelia@docker,budget-dev-api-strip"
+      - "traefik.http.routers.household-dev.rule=(Host(`household-dev.${DOMAIN_PRIMARY}`) || Host(`www.household-dev.${DOMAIN_PRIMARY}`)) && !PathPrefix(`/api`)"
+      - "traefik.http.routers.household-dev.priority=10"
+      - "traefik.http.routers.household-dev.entrypoints=websecure"
+      - "traefik.http.routers.household-dev.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.household-dev.service=household-dev-ui"
+      - "traefik.http.services.household-dev-ui.loadbalancer.server.port=5173"
+      - "traefik.http.middlewares.household-dev-sec.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
+      - "traefik.http.middlewares.household-dev-sec.headers.customResponseHeaders.X-Frame-Options=SAMEORIGIN"
+      - "traefik.http.routers.household-dev.middlewares=household-dev-sec,authelia@docker"
+      - "traefik.http.routers.household-dev-api.rule=Host(`household-dev.${DOMAIN_PRIMARY}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.household-dev-api.priority=20"
+      - "traefik.http.routers.household-dev-api.entrypoints=websecure"
+      - "traefik.http.routers.household-dev-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.household-dev-api.service=household-dev-api"
+      - "traefik.http.services.household-dev-api.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.household-dev-api-strip.stripprefix.prefixes=/api"
+      - "traefik.http.routers.household-dev-api.middlewares=authelia@docker,household-dev-api-strip"
       - "homepage.enable=true"
-      - "homepage.name=Household Budget Dev"
-      - "homepage.href=https://budget-dev.${DOMAIN_PRIMARY}"
-      - "homepage.icon=https://budget-dev.${DOMAIN_PRIMARY}/favicon.svg"
+      - "homepage.name=Household Dev"
+      - "homepage.href=https://household-dev.${DOMAIN_PRIMARY}"
+      - "homepage.icon=https://household-dev.${DOMAIN_PRIMARY}/favicon.svg"
       - "homepage.group=Projects"
 
 networks:

@@ -1,12 +1,12 @@
 services:
-  budget-dev:
+  household-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
       args:
         PUID: ${PUID:-1000}
         PGID: ${PGID:-1000}
-    container_name: budget-dev
+    container_name: household-dev
     restart: unless-stopped
     env_file: .env
     user: "${PUID:-1000}:${PGID:-1000}"
@@ -23,7 +23,7 @@ services:
       VITE_ALLOWED_HOSTS: ${VITE_ALLOWED_HOSTS}
     volumes:
       - ./:/app
-      - ${BUDGET_DB_DIR}:/data
+      - ${HOUSEHOLD_DB_DIR}:/data
       - ./backend/logs:/app/backend/logs
       - ./frontend/node_modules:/app/frontend/node_modules
     ports:

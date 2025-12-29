@@ -5,6 +5,7 @@ import { ExpensesPage } from "./pages/Expenses/ExpensesPage.jsx";
 import { SettingsPage } from "./pages/Settings/SettingsPage.jsx";
 import { AllocationsPage } from "./pages/Allocations/AllocationsPage.jsx";
 import { LoginPage } from "./pages/Login/LoginPage.jsx";
+import { HomePage } from "./pages/Home/HomePage.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { SettingsProvider } from "./contexts/SettingsContext.jsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
@@ -18,11 +19,12 @@ export default function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route element={<AppLayout />}>
+                <Route path="/" element={<HomePage />} />
                 <Route path="/income" element={<IncomePage />} />
                 <Route path="/expenses" element={<ExpensesPage />} />
                 <Route path="/allocations" element={<AllocationsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
-                <Route path="*" element={<Navigate to="/income" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Routes>
           </ErrorBoundary>

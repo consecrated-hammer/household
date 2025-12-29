@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [tokens, setTokens] = useState(() => {
-    const saved = localStorage.getItem("budgetTokens");
+    const saved = localStorage.getItem("householdTokens");
     return saved ? JSON.parse(saved) : null;
   });
   const tokensRef = useRef(tokens);
@@ -13,9 +13,9 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (tokens) {
-      localStorage.setItem("budgetTokens", JSON.stringify(tokens));
+      localStorage.setItem("householdTokens", JSON.stringify(tokens));
     } else {
-      localStorage.removeItem("budgetTokens");
+      localStorage.removeItem("householdTokens");
     }
     tokensRef.current = tokens;
   }, [tokens]);
